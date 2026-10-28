@@ -126,12 +126,14 @@ def prepareScoutingNanoTaskMC():
     return scoutingNanoTaskMC
 
 # Common tasks added to main scoutingNanoSequence
+badScoutingEventFilter = cms.EDFilter("BadScoutingEventFilter", particles = cms.InputTag("hltScoutingPFPacker"), maxPt = cms.double(6800.0))
+scoutingPFCandidate.scoutingparticle = cms.InputTag("badScoutingEventFilter")
 scoutingNanoTaskCommon = prepareScoutingNanoTaskCommon()
-scoutingNanoSequence = cms.Sequence(scoutingNanoTaskCommon)
+scoutingNanoSequence = cms.Sequence(badScoutingEventFilter, scoutingNanoTaskCommon)
 
 # Specific tasks which will be added to sequence during customization
 scoutingTriggerTask = prepareScoutingTriggerTask()
-scoutingTriggerSequence = cms.Sequence(scoutingTriggerTask)
+scoutingTriggerSequence = cms.Sequence(badScoutingEventFilter, scoutingTriggerTask)
 scoutingNanoTaskMC = prepareScoutingNanoTaskMC()
 
 def customiseScoutingNano(process):
